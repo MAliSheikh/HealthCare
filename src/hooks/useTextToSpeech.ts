@@ -31,13 +31,19 @@ export function useTextToSpeech() {
 
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => {
+      utterance.onerror = (event) => {
         setIsSpeaking(false);
-        toast({
-          title: "Speech Error",
-          description: "Unable to play audio. Please try again.",
-          variant: "destructive",
-        });
+        // Only show error if not canceled/interrupted
+        if (
+          event.error !== 'canceled' &&
+          event.error !== 'interrupted'
+        ) {
+          toast({
+            title: "Speech Error",
+            description: "Unable to play audio. Please try again.",
+            variant: "destructive",
+          });
+        }
       };
 
       window.speechSynthesis.speak(utterance);

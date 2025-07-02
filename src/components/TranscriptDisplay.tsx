@@ -10,6 +10,7 @@ interface TranscriptDisplayProps {
   onSpeak?: () => void;
   canSpeak?: boolean;
   onClear: () => void;
+  isSpeaking?: boolean;
 }
 
 export function TranscriptDisplay({ 
@@ -18,7 +19,8 @@ export function TranscriptDisplay({
   language, 
   onSpeak, 
   canSpeak = false,
-  onClear 
+  onClear,
+  isSpeaking = false
 }: TranscriptDisplayProps) {
   const { toast } = useToast();
 
@@ -72,6 +74,7 @@ export function TranscriptDisplay({
                 size="sm"
                 onClick={onSpeak}
                 className="h-8 px-3"
+                disabled={isSpeaking}
               >
                 <Volume2 className="h-4 w-4 mr-1" />
                 Speak

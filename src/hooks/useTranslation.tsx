@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useCallback, useEffect } from "react";
+import { useToast } from "./use-toast";
 import Groq from "groq-sdk";
 
 /**
@@ -15,20 +15,34 @@ import Groq from "groq-sdk";
 export function useTranslation() {
   const [isTranslating, setIsTranslating] = useState(false);
   const { toast } = useToast();
-  const groq = new Groq({
-    apiKey: import.meta.env.VITE_GROQ_API_KEY,
-    dangerouslyAllowBrowser: true
-  });
+  const [translationService, setTranslationService] = useState<Groq | null>(null);
+
+  useEffect(() => {
+    // Initialize Groq client
+    const groq = new Groq({
+      apiKey: process.env.VITE_GROQ_API_KEY,
+      dangerouslyAllowBrowser: true
+    });
+    setTranslationService(groq);
+  }, []);
 
   const translateText = useCallback(async (
-    text: string, 
-    fromLang: string, 
+    text: string,
+    fromLang: string,
     toLang: string
   ): Promise<string> => {
     if (!text.trim()) return "";
-    
+    if (!translationService) {
+      toast({
+        title: "Translation Error",
+        description: "Translation service not initialized",
+        variant: "destructive",
+      });
+      return text;
+    }
+
     setIsTranslating(true);
-    
+
     try {
       const systemPrompt = `You are a professional medical translator. Your task is to translate medical conversations between patients and healthcare providers with the highest accuracy and cultural sensitivity.
 
@@ -45,7 +59,7 @@ CRITICAL INSTRUCTIONS:
 
 ${text}`;
 
-      const completion = await groq.chat.completions.create({
+      const completion = await translationService.chat.completions.create({
         messages: [
           {
             role: "system",
@@ -57,6 +71,9 @@ ${text}`;
           },
         ],
         model: "llama-3.3-70b-versatile",
+        // temperature: 0.1,
+        // max_tokens: 1000,
+        // top_p: 0.9,
       });
 
       const translatedText = completion.choices[0]?.message?.content?.trim();
@@ -67,18 +84,29 @@ ${text}`;
       }
 
       return translatedText;
+
     } catch (error) {
       console.error('Translation error:', error);
+      let errorMessage = "Unable to translate text. Please try again.";
+
+      if (error instanceof Error) {
+        if (error.message.includes('401')) {
+          errorMessage = "Authentication failed. Please check API configuration.";
+        } else if (error.message.includes('429')) {
+          errorMessage = "Too many requests. Please try again later.";
+        }
+      }
+
       toast({
         title: "Translation Error",
-        description: "Unable to translate text. Please check your connection and try again.",
+        description: errorMessage,
         variant: "destructive",
       });
       return text; // Return original text if translation fails
     } finally {
       setIsTranslating(false);
     }
-  }, [toast]);
+  }, [toast, translationService]);
 
   return { translateText, isTranslating };
 }

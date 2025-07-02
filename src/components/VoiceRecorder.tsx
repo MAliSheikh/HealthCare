@@ -105,7 +105,11 @@ export function VoiceRecorder({
       <Button
         variant={isRecording ? "record" : "default"}
         size="icon"
-        onClick={isRecording ? stopRecording : startRecording}
+        onMouseDown={startRecording}
+        onMouseUp={stopRecording}
+        onMouseLeave={stopRecording}
+        onTouchStart={startRecording}
+        onTouchEnd={stopRecording}
         disabled={isProcessing && !isRecording}
         className="relative"
       >
@@ -123,10 +127,10 @@ export function VoiceRecorder({
       
       <div className="text-center">
         <p className="text-sm font-medium text-foreground">
-          {isRecording ? "Recording..." : "Click to start recording"}
+          {isRecording ? "Recording..." : "Hold to record"}
         </p>
         <p className="text-xs text-muted-foreground">
-          {isRecording ? "Tap the button again to stop" : "Speak clearly for better accuracy"}
+          {isRecording ? "Release to stop recording" : "Press and hold the button to record"}
         </p>
       </div>
     </div>

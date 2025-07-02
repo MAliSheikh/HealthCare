@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { VoiceRecorder } from "@/components/VoiceRecorder";
 import { TranscriptDisplay } from "@/components/TranscriptDisplay";
@@ -35,6 +35,8 @@ const Index = () => {
   // Custom hooks for translation and text-to-speech functionality
   const { translateText, isTranslating } = useTranslation();
   const { speak, isSpeaking } = useTextToSpeech();
+  const speakTimeout = useRef<NodeJS.Timeout | null>(null);
+  const lastSpokenTranslation = useRef<string>("");
 
   // Auto-translate when original text changes
   useEffect(() => {
@@ -42,16 +44,24 @@ const Index = () => {
       translateText(originalText, sourceLanguage, targetLanguage)
         .then((translation) => {
           setTranslatedText(translation);
-          // Automatically speak the translation when ready
-          if (translation.trim()) {
-            speak(translation, targetLanguage);
+          // Only speak if translation is new and not already spoken
+          if (
+            translation.trim() &&
+            !isSpeaking &&
+            translation !== lastSpokenTranslation.current
+          ) {
+            if (speakTimeout.current) clearTimeout(speakTimeout.current);
+            speakTimeout.current = setTimeout(() => {
+              speak(translation, targetLanguage);
+              lastSpokenTranslation.current = translation;
+            }, 400); // 400ms debounce
           }
         })
         .catch(console.error);
     } else {
       setTranslatedText("");
     }
-  }, [originalText, sourceLanguage, targetLanguage, translateText, speak]);
+  }, [originalText, sourceLanguage, targetLanguage, translateText, speak, isSpeaking]);
 
   /**
    * Switches roles between patient and provider by swapping languages
@@ -68,13 +78,22 @@ const Index = () => {
 
   /** Plays audio of the translated text */
   const handleSpeak = () => {
-    speak(translatedText, targetLanguage);
+    // Only speak if not already speaking and translation is new
+    if (
+      !isSpeaking &&
+      translatedText.trim() &&
+      translatedText !== lastSpokenTranslation.current
+    ) {
+      speak(translatedText, targetLanguage);
+      lastSpokenTranslation.current = translatedText;
+    }
   };
 
   /** Clears both original and translated text */
   const clearTranscripts = () => {
     setOriginalText("");
     setTranslatedText("");
+    lastSpokenTranslation.current = "";
   };
 
   return (
@@ -163,6 +182,7 @@ const Index = () => {
             language={targetLanguage}
             onSpeak={handleSpeak}
             canSpeak={true}
+            isSpeaking={isSpeaking}
             onClear={() => setTranslatedText("")}
           />
         </div>
