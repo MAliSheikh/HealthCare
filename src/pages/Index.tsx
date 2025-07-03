@@ -121,7 +121,7 @@ const Index = () => {
       <main className="container mx-auto px-6 py-10 space-y-10">
         {/* Tab Navigation */}
         <div className="flex justify-center">
-          <div className="bg-white/80 backdrop-blur-xl p-2 rounded-2xl shadow-2xl shadow-blue-500/20 border border-blue-200/50">
+          <div className="mx-1 sm:mx-0 bg-white/80 backdrop-blur-xl p-2 rounded-2xl shadow-2xl shadow-blue-500/20 border border-blue-200/50">
             <div className="flex space-x-2">
               <button
                 onClick={() => switchToTab("patient")}
@@ -150,7 +150,7 @@ const Index = () => {
         </div>
 
         {/* Language Selection */}
-        <Card className="mx-10 bg-white/80 backdrop-blur-xl shadow-2xl shadow-blue-500/10 border-blue-200/50 rounded-3xl overflow-hidden">
+        <Card className="mx-2 sm:mx-10 bg-white/80 backdrop-blur-xl shadow-2xl shadow-blue-500/10 border-blue-200/50 rounded-3xl overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-blue-600/10 to-indigo-600/10 border-b border-blue-200/30">
             <CardTitle className="flex items-center gap-3 text-blue-900">
               <div className="p-2 bg-blue-600/10 rounded-xl">
@@ -180,7 +180,7 @@ const Index = () => {
         </Card>
 
         {/* Voice Recording */}
-        <Card className="mx-10 bg-white/80 backdrop-blur-xl shadow-2xl shadow-blue-500/10 border-blue-200/50 rounded-3xl overflow-hidden">
+        <Card className="mx-2 sm:mx-10 bg-white/80 backdrop-blur-xl shadow-2xl shadow-blue-500/10 border-blue-200/50 rounded-3xl overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-blue-600/10 to-indigo-600/10 border-b border-blue-200/30">
             <CardTitle className="text-center text-blue-900 text-2xl">
               Voice Recording - {activeTab === "patient" ? "Patient" : "Provider"}
@@ -197,7 +197,7 @@ const Index = () => {
         </Card>
 
         {/* Transcripts */}
-        <div className="mx-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="mx-2 sm:mx-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Original Transcript */}
           <Card className="bg-white/80 backdrop-blur-xl shadow-2xl shadow-blue-500/10 border-blue-200/50 rounded-3xl overflow-hidden transform hover:scale-105 transition-all duration-300">
             <CardHeader className="bg-gradient-to-r from-blue-600/10 to-indigo-600/10 border-b border-blue-200/30">
@@ -254,10 +254,10 @@ const Index = () => {
         )}
 
         {/* Privacy Notice */}
-        <Card className="mx-10 bg-gradient-to-r from-emerald-50/80 to-teal-50/80 backdrop-blur-xl border-emerald-200/50 border-2 border-dashed rounded-3xl shadow-xl shadow-emerald-500/10">
+        <Card className="mx-2 sm:mx-10 bg-gradient-to-r from-emerald-50/80 to-teal-50/80 backdrop-blur-xl border-emerald-200/50 border-2 border-dashed rounded-3xl shadow-xl shadow-emerald-500/10">
           <CardContent className="p-8">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-emerald-600/10 rounded-2xl">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+              <div className="p-3 bg-emerald-600/10 rounded-2xl flex-shrink-0">
                 <Shield className="h-8 w-8 text-emerald-600" />
               </div>
               <div>
