@@ -221,11 +221,11 @@ const Index = () => {
                 {translatedText && (
                   <Button
                     onClick={handleSpeak}
-                    disabled={isSpeaking || hasSpokenOnce.current}
+                    disabled={isSpeaking}
                     className="bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white shadow-lg shadow-indigo-500/30 rounded-xl px-4 py-2 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:scale-100"
                   >
                     <Volume2 className="h-4 w-4 mr-2" />
-                    {isSpeaking ? "Speaking..." : hasSpokenOnce.current ? "Spoken" : "Speak"}
+                    {isSpeaking ? "Speaking..." : "Speak"}
                   </Button>
                 )}
               </CardTitle>
