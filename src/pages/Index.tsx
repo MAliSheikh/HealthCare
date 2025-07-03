@@ -48,12 +48,10 @@ const Index = () => {
       translateText(originalText, sourceLanguage, targetLanguage)
         .then((translation) => {
           setTranslatedText(translation);
-          hasSpokenOnce.current = false; // Reset speak flag for new translation
         })
         .catch(console.error);
     } else {
       setTranslatedText("");
-      hasSpokenOnce.current = false;
     }
   }, [originalText, sourceLanguage, targetLanguage, translateText]);
 
@@ -81,9 +79,8 @@ const Index = () => {
 
   /** Plays audio of the translated text - only once per translation */
   const handleSpeak = () => {
-    if (!isSpeaking && translatedText.trim() && !hasSpokenOnce.current) {
+    if (!isSpeaking && translatedText.trim()) {
       speak(translatedText, targetLanguage);
-      hasSpokenOnce.current = true;
     }
   };
 
@@ -91,7 +88,6 @@ const Index = () => {
   const clearTranscripts = () => {
     setOriginalText("");
     setTranslatedText("");
-    hasSpokenOnce.current = false;
   };
 
   return (
